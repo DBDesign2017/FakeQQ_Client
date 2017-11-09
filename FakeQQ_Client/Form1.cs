@@ -50,7 +50,6 @@ namespace FakeQQ_Client
             try
             {
                 client.EndConnect(iar);
-                Console.WriteLine("success");
             }
             catch (Exception e)
             {
@@ -60,6 +59,7 @@ namespace FakeQQ_Client
             {
 
             }
+            Console.WriteLine("success");
         }
     }
 }
