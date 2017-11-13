@@ -47,19 +47,30 @@ namespace FakeQQ_Client
         void Connect(IAsyncResult iar)
         {
             Socket client = (Socket)iar.AsyncState;
+            bool success = true;
             try
             {
                 client.EndConnect(iar);
+                //SendPacket.Send();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+                MessageBox.Show("连接到服务器失败");
+                success = false;
             }
             finally
             {
 
             }
-            Console.WriteLine("success");
+            if (success == true)
+            {
+                Console.WriteLine("success");
+            }
+            else
+            {
+                Console.WriteLine("fail");
+            }
         }
     }
 }
