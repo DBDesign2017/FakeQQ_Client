@@ -15,6 +15,7 @@ namespace FakeQQ_Client
 {
     public partial class Form1 : Form
     {
+        private ClientOperation c;
         public Form1()
         {
             InitializeComponent();
@@ -22,55 +23,31 @@ namespace FakeQQ_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //构造要发送的数据包
-            DataPacket packet = new DataPacket();
-            packet.CommandNo = 1;
-            /*IPAddress local = IPAddress.Parse("127.0.0.1");
-            int port = 8500;
-            IPEndPoint iep = new IPEndPoint(local, port);*/
-            packet.FromIP = IPAddress.Parse("127.0.0.2");
-            //处理数据包的Content部分
-            LoginData content = new LoginData();
-            content.UserID = textBox1.Text.Trim();
-            content.PassWord = textBox1.Text.Trim();
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            packet.Content = js.Serialize(content);
-
-            //发送！
-            Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress local = IPAddress.Parse("127.0.0.1");
-            int port = 8500;
-            IPEndPoint iep = new IPEndPoint(local, port);
-            client.BeginConnect(iep, new AsyncCallback(Connect), client);
-        }
-
-        void Connect(IAsyncResult iar)
-        {
-            Socket client = (Socket)iar.AsyncState;
-            bool success = true;
-            try
+            c = new ClientOperation();
+            c.Login(textBox1.Text.Trim(), textBox2.Text.Trim());
+            button1.Text = "登录中";
+            ClientOperation.LoginSuccess += new ClientOperation.LoginSuccessHandler(LoginSuccess);
+            /*if(c.Login(textBox1.Text.Trim(), textBox2.Text.Trim()) == true)
             {
-                client.EndConnect(iar);
-                //SendPacket.Send();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                MessageBox.Show("连接到服务器失败");
-                success = false;
-            }
-            finally
-            {
-
-            }
-            if (success == true)
-            {
-                Console.WriteLine("success");
+                new System.Threading.Thread(() =>
+                {
+                    Application.Run(new Form2(c));
+                }).Start();
+                this.Close();
             }
             else
             {
-                Console.WriteLine("fail");
-            }
+                MessageBox.Show("登录失败！");
+            }*/
+        }
+
+        private void LoginSuccess(object sender, EventArgs e)
+        {
+            new System.Threading.Thread(() =>
+            {
+                Application.Run(new Form2(c));
+            }).Start();
+            this.Close();
         }
     }
 }
