@@ -14,8 +14,19 @@ namespace FakeQQ_Client
     {
         private Form2 Form;
         private Socket client;
-        public delegate void LoginSuccessHandler(object sender, EventArgs e);
-        public static event LoginSuccessHandler LoginSuccess;
+
+        public delegate void CrossThreadCallControlHandler(object sender, EventArgs e);
+        public static event CrossThreadCallControlHandler LoginSuccess;
+        public static event CrossThreadCallControlHandler LoginFail;
+        private static void ToLoginSuccess(object sender, EventArgs e)
+        {
+            LoginSuccess?.Invoke(sender, e);
+        }
+        private static void ToLoginFail(object sender, EventArgs e)
+        {
+            LoginFail?.Invoke(sender, e);
+        }
+
         public bool Login(string input_ID, string input_PW)
         {
             bool success = false;
@@ -60,8 +71,15 @@ namespace FakeQQ_Client
             //等待服务器的回信
             DataPacketManager recieveData = new DataPacketManager();
             recieveData.client = client;
-            client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
+            try
+            {
+                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
                 new AsyncCallback(RecieveCallback), recieveData);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
             return success;
         }
         private void RecieveCallback(IAsyncResult iar)
@@ -71,13 +89,22 @@ namespace FakeQQ_Client
             if (bytes > 0)
             {
                 DataPacket packet = new DataPacket(recieveData.buffer);
+                Console.WriteLine(packet.CommandNo.ToString());
                 //接下根据packet内的commandNo进行各种不同操作
                 switch (packet.CommandNo)
                 {
                     case 1:
                         {
                             //发布登录成功事件
-                            LoginSuccess?.Invoke(null, null);
+                            Console.WriteLine("login success");
+                            ToLoginSuccess(null, null);
+                            break;
+                        }
+                    case 2:
+                        {
+                            //发布登录失败事件
+                            Console.WriteLine("login fail");
+                            ToLoginFail(null, null);
                             break;
                         }
                     default:
