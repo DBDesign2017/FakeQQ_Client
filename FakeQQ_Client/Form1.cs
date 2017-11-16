@@ -21,6 +21,8 @@ namespace FakeQQ_Client
             InitializeComponent();
             ClientOperation.LoginSuccess += new ClientOperation.CrossThreadCallControlHandler(LoginSuccess);
             ClientOperation.LoginFail += new ClientOperation.CrossThreadCallControlHandler(LoginFail);
+            ClientOperation.RegisterSuccess += new ClientOperation.CrossThreadCallControlHandler(RegisterSuccess);
+            ClientOperation.RegisterFail += new ClientOperation.CrossThreadCallControlHandler(RegisterFail);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,21 +64,55 @@ namespace FakeQQ_Client
 
         private void button2_Click(object sender, EventArgs e)
         {
-            /*if (textBox3.Text.Trim() == textBox4.Text.Trim() && textBox3.Text.Trim() != "" && textBox3.Text.Trim().Length < 17)
+            c = new ClientOperation();
+            string input_PW = textBox3.Text.Trim();//没有做安全性检查
+            /*bool legal = true;
+            for(int i=0; i< input_PW.Length; i++)
             {
-                c.Register(textBox3.Text.Trim());
-                label5.Text = "注册中";
+                if(input_PW[i].IsNumber())
+                {
+                    legal = false;
+                }
+            }*/
+            if (input_PW == textBox4.Text.Trim() && input_PW != "" && input_PW.Length < 17)
+            {
+                c.Register(input_PW);
+                label6.Text = "注册中";
             }
             else
             {
-                label5.Text = "注册失败";
-            }*/
+                label6.Text = "密码不符合要求，注册失败";
+            }
         }
 
-        /*private void RegisterSuccess(object sender, EventArgs e)
+        private void RegisterSuccess(object sender, EventArgs e)
         {
-            string ID = (string)e;
-            label5.Text = "注册成功！您的账号为：" + ID;
-        }*/
+            DataPacket packet = (DataPacket)e;
+            /*JavaScriptSerializer js = new JavaScriptSerializer();
+            dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));//动态的反序列化，不删除Content后面的结束符的话无法反序列化 
+            string ID = content["UserID"];//动态反序列化的结果必须用索引取值*/
+            string ID = packet.Content.Replace("\0", "");
+            if (label6.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(RegisterSuccess);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                label6.Text = "注册成功！您的账号为：" + ID;
+            }
+        }
+        private void RegisterFail(object sender, EventArgs e)
+        {
+            if (label6.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(RegisterFail);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                label6.Text = "服务器错误";
+            }
+        }
     }
 }

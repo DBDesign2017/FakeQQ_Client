@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FakeQQ_Client
 {
-    class DataPacketManager
+    class DataPacketManager:EventArgs
     {
-        public Socket client = null;
+        public Socket socket = null;
         public const int MAX_SIZE = 8096;
         public byte[] buffer = new byte[MAX_SIZE];
     }

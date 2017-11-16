@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace FakeQQ_Client
 {
-    class LoginData
+    class RegisterData
     {
-        public string UserID;
         public string Password;
     }
 }
