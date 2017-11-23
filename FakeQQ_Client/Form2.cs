@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,9 +15,16 @@ namespace FakeQQ_Client
     public partial class Form2 : Form
     {
         private ClientOperation c;
+        private ArrayList friendList;
         public Form2(ClientOperation c)
         {
             this.c = c;
+            friendList = new ArrayList();
+            c.DownloadFriendList(ref friendList);//从服务器更新好友列表
+            for(int i=0; i<friendList.Count; i++)
+            {
+                listView1.Items.Add(friendList[i].ToString());
+            }
             InitializeComponent();
         }
 

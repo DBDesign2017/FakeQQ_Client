@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using System.Collections;
 
 namespace FakeQQ_Client
 {
@@ -136,6 +137,22 @@ namespace FakeQQ_Client
             return;
 
         }
+
+        //请求从服务器上下载好友列表
+        public void DownloadFriendList(ref ArrayList friendList)
+        {
+            //构造要发送的数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 7;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            packet.ComputerName = "";
+            packet.NameLength = packet.ComputerName.Length;
+            //处理数据包的Content部分
+            //发送！
+            //等待服务器的回信
+        }
+
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;
@@ -150,28 +167,28 @@ namespace FakeQQ_Client
                     case 1:
                         {
                             //发布登录成功事件
-                            Console.WriteLine("login success");
+                            Console.WriteLine("login success event occur");
                             ToLoginSuccess(null, null);
                             break;
                         }
                     case 2:
                         {
                             //发布登录失败事件
-                            Console.WriteLine("login fail");
+                            Console.WriteLine("login fail event occur");
                             ToLoginFail(null, null);
                             break;
                         }
                     case 3:
                         {
                             //发布注册成功事件
-                            Console.WriteLine("register success!");
+                            Console.WriteLine("register success! event occur");
                             ToRegisterSuccess(null, packet);
                             break;
                         }
                     case 4:
                         {
                             //发布注册失败事件
-                            Console.WriteLine("register fail!");
+                            Console.WriteLine("register fail! event occur");
                             ToRegisterFail(null, null);
                             break;
                         }

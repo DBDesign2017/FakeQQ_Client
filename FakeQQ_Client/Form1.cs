@@ -25,6 +25,8 @@ namespace FakeQQ_Client
             ClientOperation.RegisterFail += new ClientOperation.CrossThreadCallControlHandler(RegisterFail);
         }
 
+        private delegate void ChangeControl(object sender, EventArgs e);
+
         private void button1_Click(object sender, EventArgs e)
         {
             c = new ClientOperation();
@@ -32,7 +34,6 @@ namespace FakeQQ_Client
             label5.Text = "登录中";
         }
 
-        private delegate void ChangeControl(object sender, EventArgs e);
         private void LoginSuccess(object sender, EventArgs e)
         {
             if (this.InvokeRequired)
