@@ -14,13 +14,15 @@ namespace FakeQQ_Client
     public class ClientOperation
     {
         private Form2 Form;
-        private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket client;
 
         public delegate void CrossThreadCallControlHandler(object sender, EventArgs e);
         public static event CrossThreadCallControlHandler LoginSuccess;
         public static event CrossThreadCallControlHandler LoginFail;
         public static event CrossThreadCallControlHandler RegisterSuccess;
         public static event CrossThreadCallControlHandler RegisterFail;
+        public static event CrossThreadCallControlHandler DownloadFriendListSuccess;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -36,6 +38,10 @@ namespace FakeQQ_Client
         private static void ToRegisterFail(object sender, EventArgs e)
         {
             RegisterFail?.Invoke(sender, e);
+        }
+        private static void ToDownloadFriendListSuccess(object sender, EventArgs e)
+        {
+            DownloadFriendListSuccess?.Invoke(sender, e);
         }
 
         //用户登录
@@ -55,12 +61,6 @@ namespace FakeQQ_Client
             content.Password = input_PW;
             JavaScriptSerializer js = new JavaScriptSerializer();
             packet.Content = js.Serialize(content);
-
-            /*dynamic test = js.Deserialize<dynamic>(packet.Content);//动态的反序列化
-            string test1 = test["UserID"];
-            string test2 = test["PassWord"];*/
-            //序列化和反序列化没问题
-
             //发送！
             try
             {
@@ -68,6 +68,7 @@ namespace FakeQQ_Client
                 int port = 8500;
                 IPEndPoint iep = new IPEndPoint(local, port);
                 DataPacketManager sendedData = new DataPacketManager();
+                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 sendedData.socket = this.client;
                 sendedData.buffer = packet.PacketToBytes();
                 client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
@@ -114,6 +115,7 @@ namespace FakeQQ_Client
                 int port = 8500;
                 IPEndPoint iep = new IPEndPoint(local, port);
                 DataPacketManager sendedData = new DataPacketManager();
+                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 sendedData.socket = client;
                 sendedData.buffer = packet.PacketToBytes();
                 client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
@@ -139,18 +141,43 @@ namespace FakeQQ_Client
         }
 
         //请求从服务器上下载好友列表
-        public void DownloadFriendList(ref ArrayList friendList)
+        public void DownloadFriendList(ref ArrayList friendList, string UserID)
         {
             //构造要发送的数据包
             DataPacket packet = new DataPacket();
-            packet.CommandNo = 7;
+            packet.CommandNo = 9;
             packet.FromIP = IPAddress.Parse("127.0.0.2");
             packet.ToIP = IPAddress.Parse("127.0.0.2");
             packet.ComputerName = "";
             packet.NameLength = packet.ComputerName.Length;
             //处理数据包的Content部分
+            packet.Content = UserID;//仅包含当前用户的ID
             //发送！
+            try
+            {
+                IPAddress local = IPAddress.Parse("127.0.0.1");
+                int port = 8500;
+                IPEndPoint iep = new IPEndPoint(local, port);
+                //client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
+                Send(client, packet.PacketToBytes());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
             //等待服务器的回信
+            DataPacketManager recieveData = new DataPacketManager();
+            recieveData.socket = client;
+            try
+            {
+                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
+                new AsyncCallback(RecieveCallback), recieveData);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return;
         }
 
         private void RecieveCallback(IAsyncResult iar)
@@ -168,7 +195,7 @@ namespace FakeQQ_Client
                         {
                             //发布登录成功事件
                             Console.WriteLine("login success event occur");
-                            ToLoginSuccess(null, null);
+                            ToLoginSuccess(null, packet);
                             break;
                         }
                     case 2:
@@ -183,6 +210,7 @@ namespace FakeQQ_Client
                             //发布注册成功事件
                             Console.WriteLine("register success! event occur");
                             ToRegisterSuccess(null, packet);
+                            client.Close();
                             break;
                         }
                     case 4:
@@ -190,6 +218,20 @@ namespace FakeQQ_Client
                             //发布注册失败事件
                             Console.WriteLine("register fail! event occur");
                             ToRegisterFail(null, null);
+                            client.Close();
+                            break;
+                        }
+                    case 17:
+                        {
+                            //发布下载好友列表成功事件
+                            Console.WriteLine("download friend list success event occur");
+                            ToDownloadFriendListSuccess(null, packet);
+                            break;
+                        }
+                    case 18:
+                        {
+                            //发布下载好友列表失败事件
+                            Console.WriteLine("download friend list fail event occur");
                             break;
                         }
                     default:
@@ -242,6 +284,7 @@ namespace FakeQQ_Client
             {
                 //重新获取socket
                 Socket handler = (Socket)iar.AsyncState;
+                //handler.BeginAccept(new AsyncCallback(AcceptCallback), handler);//重新开始监听
                 //完成发送字节数组动作
                 int bytesSent = handler.EndSend(iar);
                 Console.WriteLine("Send {0} bytes to server ", bytesSent);

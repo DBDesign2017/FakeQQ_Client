@@ -27,7 +27,7 @@ namespace FakeQQ_Client
 
         private delegate void ChangeControl(object sender, EventArgs e);
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)//用户登录
         {
             c = new ClientOperation();
             c.Login(textBox1.Text.Trim(), textBox2.Text.Trim());
@@ -36,6 +36,7 @@ namespace FakeQQ_Client
 
         private void LoginSuccess(object sender, EventArgs e)
         {
+            DataPacket packet = (DataPacket)e;
             if (this.InvokeRequired)
             {
                 ChangeControl CC = new ChangeControl(LoginSuccess);
@@ -45,7 +46,7 @@ namespace FakeQQ_Client
             {
                 new System.Threading.Thread(() =>
                 {
-                    Application.Run(new Form2(c));
+                    Application.Run(new Form2(c, packet.Content));
                 }).Start();
                 this.Close();
             }
@@ -63,7 +64,7 @@ namespace FakeQQ_Client
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)//注册账户
         {
             c = new ClientOperation();
             string input_PW = textBox3.Text.Trim();//没有做安全性检查
