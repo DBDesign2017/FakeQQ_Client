@@ -17,6 +17,48 @@ namespace FakeQQ_Client
         //private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private Socket client;
 
+        public ClientOperation()
+        {
+            //验证是否能够连接到服务器
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 255;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            packet.Content = "";
+
+            try
+            {
+                IPAddress local = IPAddress.Parse("127.0.0.1");
+                int port = 8500;
+                IPEndPoint iep = new IPEndPoint(local, port);
+                DataPacketManager sendedData = new DataPacketManager();
+                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                sendedData.socket = this.client;
+                sendedData.buffer = packet.PacketToBytes();
+                client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
+                Send(client, packet.PacketToBytes());
+                //接收一次服务器的验证包
+                //进入接收数据死循环
+                DataPacketManager recieveData = new DataPacketManager();
+                recieveData.socket = client;
+                try
+                {
+                    client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
+                    new AsyncCallback(RecieveCallback), recieveData);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
         public delegate void CrossThreadCallControlHandler(object sender, EventArgs e);
         public static event CrossThreadCallControlHandler LoginSuccess;
         public static event CrossThreadCallControlHandler LoginFail;
@@ -64,27 +106,7 @@ namespace FakeQQ_Client
             //发送！
             try
             {
-                IPAddress local = IPAddress.Parse("127.0.0.1");
-                int port = 8500;
-                IPEndPoint iep = new IPEndPoint(local, port);
-                DataPacketManager sendedData = new DataPacketManager();
-                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                sendedData.socket = this.client;
-                sendedData.buffer = packet.PacketToBytes();
-                client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            //等待服务器的回信
-            DataPacketManager recieveData = new DataPacketManager();
-            recieveData.socket = client;
-            try
-            {
-                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
-                new AsyncCallback(RecieveCallback), recieveData);
+                Send(client, packet.PacketToBytes());
             }
             catch(Exception e)
             {
@@ -111,26 +133,7 @@ namespace FakeQQ_Client
             //发送！
             try
             {
-                IPAddress local = IPAddress.Parse("127.0.0.1");
-                int port = 8500;
-                IPEndPoint iep = new IPEndPoint(local, port);
-                DataPacketManager sendedData = new DataPacketManager();
-                client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                sendedData.socket = client;
-                sendedData.buffer = packet.PacketToBytes();
-                client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            //等待服务器的回信
-            DataPacketManager recieveData = new DataPacketManager();
-            recieveData.socket = client;
-            try
-            {
-                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
-                new AsyncCallback(RecieveCallback), recieveData);
+                Send(client, packet.PacketToBytes());
             }
             catch (Exception e)
             {
@@ -162,17 +165,6 @@ namespace FakeQQ_Client
                 Console.WriteLine(e.ToString());
             }
             //等待服务器的回信
-            DataPacketManager recieveData = new DataPacketManager();
-            recieveData.socket = client;
-            try
-            {
-                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
-                new AsyncCallback(RecieveCallback), recieveData);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
             return;
         }
 
@@ -194,18 +186,6 @@ namespace FakeQQ_Client
             try
             {
                 Send(client, packet.PacketToBytes());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-            //等待服务器的回信
-            DataPacketManager recieveData = new DataPacketManager();
-            recieveData.socket = client;
-            try
-            {
-                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
-                new AsyncCallback(RecieveCallback), recieveData);
             }
             catch (Exception e)
             {
@@ -270,6 +250,10 @@ namespace FakeQQ_Client
                     default:
                         break;
                 }
+                DataPacketManager newRecieveData = new DataPacketManager();
+                newRecieveData.socket = recieveData.socket;
+                newRecieveData.socket.BeginReceive(newRecieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
+                    new AsyncCallback(RecieveCallback), newRecieveData);
             }
             else
             {
@@ -280,7 +264,6 @@ namespace FakeQQ_Client
         private void ConnectCallback(IAsyncResult iar)
         {
             DataPacketManager data = (DataPacketManager)iar.AsyncState;
-            bool success = true;
             try
             {
                 data.socket.EndConnect(iar);
@@ -290,28 +273,15 @@ namespace FakeQQ_Client
             {
                 Console.WriteLine(e.ToString());
                 Console.WriteLine("连接到服务器失败");
-                success = false;
                 client.Close();
-            }
-            finally
-            {
-
-            }
-            if (success == true)
-            {
-                Console.WriteLine("success");
-            }
-            else
-            {
-                Console.WriteLine("fail");
             }
         }
 
-        private static void Send(Socket handler, byte[] buffer)
+        private void Send(Socket handler, byte[] buffer)
         {
             handler.BeginSend(buffer, 0, buffer.Length, 0, new AsyncCallback(SendCallback), handler);
         }
-        private static void SendCallback(IAsyncResult iar)
+        private void SendCallback(IAsyncResult iar)
         {
             try
             {
