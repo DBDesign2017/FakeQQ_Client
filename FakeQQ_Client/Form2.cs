@@ -43,11 +43,11 @@ namespace FakeQQ_Client
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string ID = textBox1.Text.Trim();
+            string friendID = textBox1.Text.Trim();
             bool legal = true;
-            for(int i=0; i<ID.Length; i++)
+            for(int i=0; i<friendID.Length; i++)
             {
-                if(ID[i]<48 || ID[i] > 57)
+                if(friendID[i]<48 || friendID[i] > 57)
                 {
                     legal = false;
                 }
@@ -59,7 +59,7 @@ namespace FakeQQ_Client
             }
             else
             {
-                //c.ApplyForOneFriend(ID);
+                c.ApplyForOneFriend(UserID, friendID);
             }
         }
 

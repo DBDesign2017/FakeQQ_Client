@@ -155,10 +155,6 @@ namespace FakeQQ_Client
             //发送！
             try
             {
-                IPAddress local = IPAddress.Parse("127.0.0.1");
-                int port = 8500;
-                IPEndPoint iep = new IPEndPoint(local, port);
-                //client.BeginConnect(iep, new AsyncCallback(ConnectCallback), sendedData);
                 Send(client, packet.PacketToBytes());
             }
             catch (Exception e)
@@ -180,6 +176,43 @@ namespace FakeQQ_Client
             return;
         }
 
+        //请求添加一个好友
+        public void ApplyForOneFriend(string UserID, string FriendID)
+        {
+            //构造要发送的数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 6;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            packet.ComputerName = "";
+            packet.NameLength = packet.ComputerName.Length;
+            //处理数据包的Content部分
+            ApplyForOneFriendData content = new ApplyForOneFriendData(UserID, FriendID);
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            packet.Content = js.Serialize(content);
+            //发送！
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            //等待服务器的回信
+            DataPacketManager recieveData = new DataPacketManager();
+            recieveData.socket = client;
+            try
+            {
+                client.BeginReceive(recieveData.buffer, 0, DataPacketManager.MAX_SIZE, SocketFlags.None,
+                new AsyncCallback(RecieveCallback), recieveData);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return;
+        }
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;

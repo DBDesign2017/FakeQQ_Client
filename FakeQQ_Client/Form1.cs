@@ -46,7 +46,7 @@ namespace FakeQQ_Client
             {
                 new System.Threading.Thread(() =>
                 {
-                    Application.Run(new Form2(c, packet.Content));
+                    Application.Run(new Form2(c, packet.Content.Replace("\0", "")));
                 }).Start();
                 this.Close();
             }
