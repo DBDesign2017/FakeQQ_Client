@@ -223,7 +223,6 @@ namespace FakeQQ_Client
                             //发布注册成功事件
                             Console.WriteLine("register success! event occur");
                             ToRegisterSuccess(null, packet);
-                            client.Close();
                             break;
                         }
                     case 4:
@@ -231,7 +230,6 @@ namespace FakeQQ_Client
                             //发布注册失败事件
                             Console.WriteLine("register fail! event occur");
                             ToRegisterFail(null, null);
-                            client.Close();
                             break;
                         }
                     case 17:
