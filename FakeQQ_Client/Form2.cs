@@ -17,18 +17,12 @@ namespace FakeQQ_Client
     public partial class Form2 : Form
     {
         private ClientOperation c;
-        private ArrayList friendList;
         private string UserID;
         public Form2(ClientOperation c, string UserID)
         {
             this.UserID = UserID;
             this.c = c;
-            friendList = new ArrayList();
-            c.DownloadFriendList(ref friendList, UserID);//从服务器更新好友列表
-            for(int i=0; i<friendList.Count; i++)
-            {
-                listView1.Items.Add(friendList[i].ToString());
-            }
+            this.c.DownloadFriendList(UserID);//从服务器更新好友列表
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);

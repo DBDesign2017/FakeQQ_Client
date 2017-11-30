@@ -14,8 +14,8 @@ namespace FakeQQ_Client
     public class ClientOperation
     {
         private Form2 Form;
-        //private Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private Socket client;
+        public ArrayList friendList;
 
         public ClientOperation()
         {
@@ -149,7 +149,7 @@ namespace FakeQQ_Client
         }
 
         //请求从服务器上下载好友列表
-        public void DownloadFriendList(ref ArrayList friendList, string UserID)
+        public void DownloadFriendList(string UserID)
         {
             //构造要发送的数据包
             DataPacket packet = new DataPacket();
@@ -169,7 +169,6 @@ namespace FakeQQ_Client
             {
                 Console.WriteLine(e.ToString());
             }
-            //等待服务器的回信
             return;
         }
 
