@@ -34,12 +34,11 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.ApplyForOneFriendWarning = new System.Windows.Forms.Label();
+            this.friendRequestWarningLabel = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.applyForOneFriendWarningLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -101,8 +100,7 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.applyForOneFriendWarningLabel);
-            this.groupBox1.Controls.Add(this.ApplyForOneFriendWarning);
+            this.groupBox1.Controls.Add(this.friendRequestWarningLabel);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label1);
@@ -113,13 +111,13 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "添加好友";
             // 
-            // ApplyForOneFriendWarning
+            // friendRequestWarningLabel
             // 
-            this.ApplyForOneFriendWarning.AutoSize = true;
-            this.ApplyForOneFriendWarning.Location = new System.Drawing.Point(56, 66);
-            this.ApplyForOneFriendWarning.Name = "ApplyForOneFriendWarning";
-            this.ApplyForOneFriendWarning.Size = new System.Drawing.Size(0, 12);
-            this.ApplyForOneFriendWarning.TabIndex = 3;
+            this.friendRequestWarningLabel.AutoSize = true;
+            this.friendRequestWarningLabel.Location = new System.Drawing.Point(31, 66);
+            this.friendRequestWarningLabel.Name = "friendRequestWarningLabel";
+            this.friendRequestWarningLabel.Size = new System.Drawing.Size(0, 12);
+            this.friendRequestWarningLabel.TabIndex = 4;
             // 
             // button1
             // 
@@ -157,14 +155,6 @@
             this.tabPage2.Text = "聊天窗口";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // applyForOneFriendWarningLabel
-            // 
-            this.applyForOneFriendWarningLabel.AutoSize = true;
-            this.applyForOneFriendWarningLabel.Location = new System.Drawing.Point(31, 66);
-            this.applyForOneFriendWarningLabel.Name = "applyForOneFriendWarningLabel";
-            this.applyForOneFriendWarningLabel.Size = new System.Drawing.Size(0, 12);
-            this.applyForOneFriendWarningLabel.TabIndex = 4;
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -194,8 +184,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Label ApplyForOneFriendWarning;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label applyForOneFriendWarningLabel;
+        private System.Windows.Forms.Label friendRequestWarningLabel;
     }
 }

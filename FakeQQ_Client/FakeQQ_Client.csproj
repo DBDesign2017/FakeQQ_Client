@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplyForOneFriendData.cs" />
+    <Compile Include="FriendRequestData.cs" />
     <Compile Include="ClientOperation.cs" />
     <Compile Include="DataPacket.cs" />
     <Compile Include="DataPacketManager.cs" />

@@ -65,7 +65,8 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler RegisterSuccess;
         public static event CrossThreadCallControlHandler RegisterFail;
         public static event CrossThreadCallControlHandler DownloadFriendListSuccess;
-        public static event CrossThreadCallControlHandler ApplyForOneFriendFail;
+        public static event CrossThreadCallControlHandler FriendRequestFail;
+        public static event CrossThreadCallControlHandler AnotherUserApplyFriend;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -86,9 +87,9 @@ namespace FakeQQ_Client
         {
             DownloadFriendListSuccess?.Invoke(sender, e);
         }
-        private static void ToApplyForOneFriendFail(object sender, EventArgs e)
+        private static void ToFriendRequestFail(object sender, EventArgs e)
         {
-            ApplyForOneFriendFail?.Invoke(sender, e);
+            FriendRequestFail?.Invoke(sender, e);
         }
         //用户登录
         public void Login(string input_ID, string input_PW)
@@ -173,7 +174,7 @@ namespace FakeQQ_Client
         }
 
         //请求添加一个好友
-        public void ApplyForOneFriend(string UserID, string FriendID)
+        public void FriendRequest(string UserID, string FriendID)
         {
             //构造要发送的数据包
             DataPacket packet = new DataPacket();
@@ -183,7 +184,7 @@ namespace FakeQQ_Client
             packet.ComputerName = "";
             packet.NameLength = packet.ComputerName.Length;
             //处理数据包的Content部分
-            ApplyForOneFriendData content = new ApplyForOneFriendData(UserID, FriendID);
+            FriendRequestData content = new FriendRequestData(UserID, FriendID);
             JavaScriptSerializer js = new JavaScriptSerializer();
             packet.Content = js.Serialize(content);
             //发送！
@@ -239,8 +240,8 @@ namespace FakeQQ_Client
                     case 12:
                         {
                             //发布添加好友失败事件
-                            Console.WriteLine("apply for one friend fail! event occur");
-                            ToApplyForOneFriendFail(null, packet);
+                            Console.WriteLine("friend request fail! event occur");
+                            ToFriendRequestFail(null, packet);
                             break;
                         }
                     case 17:
@@ -252,7 +253,7 @@ namespace FakeQQ_Client
                         }
                     case 18:
                         {
-                            //发布下载好友列表失败事件
+                            //并没有发布下载好友列表失败事件
                             Console.WriteLine("download friend list fail event occur");
                             break;
                         }

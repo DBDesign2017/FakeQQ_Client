@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace FakeQQ_Client
 {
-    class ApplyForOneFriendData
+    class FriendRequestData
     {
         public string UserID;
         public string FriendID;
-        public ApplyForOneFriendData(string UserID, string FriendID)
+        public FriendRequestData(string UserID, string FriendID)
         {
             this.UserID = UserID;
             this.FriendID = FriendID;

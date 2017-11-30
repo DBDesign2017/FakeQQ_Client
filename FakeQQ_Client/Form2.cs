@@ -31,7 +31,7 @@ namespace FakeQQ_Client
             }
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
-            ClientOperation.ApplyForOneFriendFail += new ClientOperation.CrossThreadCallControlHandler(ApplyForOneFriendFail);
+            ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -47,7 +47,7 @@ namespace FakeQQ_Client
             string friendID = textBox1.Text.Trim();
             if(friendID == UserID)
             {
-                applyForOneFriendWarningLabel.Text = "错误：不能加自己为好友";
+                friendRequestWarningLabel.Text = "错误：不能加自己为好友";
                 return;
             }
             bool legal = true;
@@ -60,12 +60,12 @@ namespace FakeQQ_Client
             }
             if (legal == false)
             {
-                ApplyForOneFriendWarning.ForeColor = Color.Red;
-                ApplyForOneFriendWarning.Text = "错误：输入的ID只能包含数字";
+                friendRequestWarningLabel.ForeColor = Color.Red;
+                friendRequestWarningLabel.Text = "错误：输入的ID只能包含数字";
             }
             else
             {
-                c.ApplyForOneFriend(UserID, friendID);
+                c.FriendRequest(UserID, friendID);
             }
         }
         private void DownloadFriendListSuccess(object sender, EventArgs e)
@@ -87,17 +87,17 @@ namespace FakeQQ_Client
                 }
             }
         }
-        private void ApplyForOneFriendFail(object sender, EventArgs e)
+        private void FriendRequestFail(object sender, EventArgs e)
         {
             DataPacket packet = (DataPacket)e;
-            if (applyForOneFriendWarningLabel.InvokeRequired)
+            if (friendRequestWarningLabel.InvokeRequired)
             {
-                ChangeControl CC = new ChangeControl(ApplyForOneFriendFail);
+                ChangeControl CC = new ChangeControl(FriendRequestFail);
                 this.Invoke(CC, sender, e);
             }
             else
             {
-                applyForOneFriendWarningLabel.Text = packet.Content.Replace("\0", "");
+                friendRequestWarningLabel.Text = packet.Content.Replace("\0", "");
             }
         }
     }
