@@ -65,6 +65,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler RegisterSuccess;
         public static event CrossThreadCallControlHandler RegisterFail;
         public static event CrossThreadCallControlHandler DownloadFriendListSuccess;
+        public static event CrossThreadCallControlHandler ApplyForOneFriendFail;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -85,7 +86,10 @@ namespace FakeQQ_Client
         {
             DownloadFriendListSuccess?.Invoke(sender, e);
         }
-
+        private static void ToApplyForOneFriendFail(object sender, EventArgs e)
+        {
+            ApplyForOneFriendFail?.Invoke(sender, e);
+        }
         //用户登录
         public void Login(string input_ID, string input_PW)
         {
@@ -232,6 +236,13 @@ namespace FakeQQ_Client
                             ToRegisterFail(null, null);
                             break;
                         }
+                    case 12:
+                        {
+                            //发布添加好友失败事件
+                            Console.WriteLine("apply for one friend fail! event occur");
+                            ToApplyForOneFriendFail(null, packet);
+                            break;
+                        }
                     case 17:
                         {
                             //发布下载好友列表成功事件
@@ -243,6 +254,12 @@ namespace FakeQQ_Client
                         {
                             //发布下载好友列表失败事件
                             Console.WriteLine("download friend list fail event occur");
+                            break;
+                        }
+                    case 19:
+                        {
+                            //发布有其他用户请求添加好友事件
+                            Console.WriteLine("a user want to be your friend!");
                             break;
                         }
                     default:

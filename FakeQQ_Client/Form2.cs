@@ -31,6 +31,7 @@ namespace FakeQQ_Client
             }
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
+            ClientOperation.ApplyForOneFriendFail += new ClientOperation.CrossThreadCallControlHandler(ApplyForOneFriendFail);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -41,9 +42,14 @@ namespace FakeQQ_Client
             Application.Exit();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)//用户请求添加好友
         {
             string friendID = textBox1.Text.Trim();
+            if(friendID == UserID)
+            {
+                applyForOneFriendWarningLabel.Text = "错误：不能加自己为好友";
+                return;
+            }
             bool legal = true;
             for(int i=0; i<friendID.Length; i++)
             {
@@ -62,7 +68,6 @@ namespace FakeQQ_Client
                 c.ApplyForOneFriend(UserID, friendID);
             }
         }
-
         private void DownloadFriendListSuccess(object sender, EventArgs e)
         {
             DataPacket packet = (DataPacket)e;
@@ -80,6 +85,19 @@ namespace FakeQQ_Client
                 {
                     listView1.Items.Add(friendList[i].ToString());
                 }
+            }
+        }
+        private void ApplyForOneFriendFail(object sender, EventArgs e)
+        {
+            DataPacket packet = (DataPacket)e;
+            if (applyForOneFriendWarningLabel.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(ApplyForOneFriendFail);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                applyForOneFriendWarningLabel.Text = packet.Content.Replace("\0", "");
             }
         }
     }

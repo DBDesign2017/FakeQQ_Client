@@ -30,19 +30,20 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ApplyForOneFriendWarning = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.applyForOneFriendWarningLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -67,14 +68,16 @@
             this.tabPage1.Text = "好友管理";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // groupBox2
             // 
-            this.button2.Location = new System.Drawing.Point(431, 249);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "聊天";
-            this.button2.UseVisualStyleBackColor = true;
+            this.groupBox2.Controls.Add(this.listView1);
+            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Location = new System.Drawing.Point(7, 120);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(512, 278);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "好友列表";
             // 
             // listView1
             // 
@@ -87,8 +90,18 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.List;
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(431, 249);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 2;
+            this.button2.Text = "聊天";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.applyForOneFriendWarningLabel);
             this.groupBox1.Controls.Add(this.ApplyForOneFriendWarning);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.textBox1);
@@ -144,16 +157,13 @@
             this.tabPage2.Text = "聊天窗口";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // applyForOneFriendWarningLabel
             // 
-            this.groupBox2.Controls.Add(this.listView1);
-            this.groupBox2.Controls.Add(this.button2);
-            this.groupBox2.Location = new System.Drawing.Point(7, 120);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(512, 278);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "好友列表";
+            this.applyForOneFriendWarningLabel.AutoSize = true;
+            this.applyForOneFriendWarningLabel.Location = new System.Drawing.Point(31, 66);
+            this.applyForOneFriendWarningLabel.Name = "applyForOneFriendWarningLabel";
+            this.applyForOneFriendWarningLabel.Size = new System.Drawing.Size(0, 12);
+            this.applyForOneFriendWarningLabel.TabIndex = 4;
             // 
             // Form2
             // 
@@ -166,9 +176,9 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -186,5 +196,6 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Label ApplyForOneFriendWarning;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label applyForOneFriendWarningLabel;
     }
 }
