@@ -21,6 +21,7 @@ namespace FakeQQ_Client
         public Form2(ClientOperation c, string UserID)
         {
             this.UserID = UserID;
+            this.Text = "FakeQQ " + UserID;
             this.c = c;
             this.c.DownloadFriendList(UserID);//从服务器更新好友列表
             InitializeComponent();

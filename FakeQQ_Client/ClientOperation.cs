@@ -222,6 +222,11 @@ namespace FakeQQ_Client
             {
                 Console.WriteLine(e.ToString());
             }
+            //在本地的好友列表里面加一项
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            dynamic content = js.Deserialize<dynamic>(Content);
+            string newFriend = content["UserID"];
+            friendList.Add(newFriend);
         }
         private void RecieveCallback(IAsyncResult iar)
         {
@@ -274,6 +279,9 @@ namespace FakeQQ_Client
                             //发布下载好友列表成功事件
                             Console.WriteLine("download friend list success event occur");
                             ToDownloadFriendListSuccess(null, packet);
+                            //在逻辑层更新好友列表
+                            JavaScriptSerializer js = new JavaScriptSerializer();
+                            friendList = js.Deserialize<ArrayList>(packet.Content.Replace("\0", ""));
                             break;
                         }
                     case 18:
