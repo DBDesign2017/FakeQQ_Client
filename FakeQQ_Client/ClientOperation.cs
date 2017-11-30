@@ -66,7 +66,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler RegisterFail;
         public static event CrossThreadCallControlHandler DownloadFriendListSuccess;
         public static event CrossThreadCallControlHandler FriendRequestFail;
-        public static event CrossThreadCallControlHandler AnotherUserApplyFriend;
+        public static event CrossThreadCallControlHandler AnotherUserFriendRequest;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -90,6 +90,10 @@ namespace FakeQQ_Client
         private static void ToFriendRequestFail(object sender, EventArgs e)
         {
             FriendRequestFail?.Invoke(sender, e);
+        }
+        private static void ToAnotherUserFriendRequest(object sender, EventArgs e)
+        {
+            AnotherUserFriendRequest?.Invoke(sender, e);
         }
         //用户登录
         public void Login(string input_ID, string input_PW)
@@ -197,6 +201,28 @@ namespace FakeQQ_Client
             }
             return;
         }
+
+        //同意别人的添加好友请求
+        public void ConfirmFriendRequest(string Content)
+        {
+            //构造数据包
+            DataPacket packet = new DataPacket();
+            packet.Content = Content;
+            packet.CommandNo = 10;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            //发送！
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;
@@ -238,7 +264,7 @@ namespace FakeQQ_Client
                         }
                     case 12:
                         {
-                            //发布添加好友失败事件
+                            //发布自己添加好友失败事件
                             Console.WriteLine("friend request fail! event occur");
                             ToFriendRequestFail(null, packet);
                             break;
@@ -260,6 +286,7 @@ namespace FakeQQ_Client
                         {
                             //发布有其他用户请求添加好友事件
                             Console.WriteLine("a user want to be your friend!");
+                            ToAnotherUserFriendRequest(null, packet);
                             break;
                         }
                     default:

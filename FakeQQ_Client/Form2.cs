@@ -26,6 +26,7 @@ namespace FakeQQ_Client
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
+            ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -92,6 +93,17 @@ namespace FakeQQ_Client
             else
             {
                 friendRequestWarningLabel.Text = packet.Content.Replace("\0", "");
+            }
+        }
+        private void AnotherUserFriendRequest(object sender, EventArgs e)
+        {
+            DataPacket packet = (DataPacket)e;
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+            string UserID = content["UserID"];
+            if (MessageBox.Show("用户" + UserID + "申请成为你的好友，是否同意？", "新的好友申请", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                c.ConfirmFriendRequest(packet.Content);
             }
         }
     }
