@@ -15,7 +15,7 @@ namespace FakeQQ_Client
     {
         private Form2 Form;
         private Socket client;
-        public ArrayList friendList;
+        public ArrayList friendList;//里面存的都是string类型的好友的ID，以后可以存储别的东西，反正是object都可以放进去
 
         public ClientOperation()
         {
@@ -59,6 +59,7 @@ namespace FakeQQ_Client
             }
         }
 
+        //定义了逻辑层和界面层通信的事件
         public delegate void CrossThreadCallControlHandler(object sender, EventArgs e);
         public static event CrossThreadCallControlHandler LoginSuccess;
         public static event CrossThreadCallControlHandler LoginFail;
@@ -67,6 +68,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler DownloadFriendListSuccess;
         public static event CrossThreadCallControlHandler FriendRequestFail;
         public static event CrossThreadCallControlHandler AnotherUserFriendRequest;
+        public static event CrossThreadCallControlHandler AnotherUserConfirmFriendRequest;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -94,6 +96,10 @@ namespace FakeQQ_Client
         private static void ToAnotherUserFriendRequest(object sender, EventArgs e)
         {
             AnotherUserFriendRequest?.Invoke(sender, e);
+        }
+        private static void ToAnotherUserConfirmFriendRequest(object sender, EventArgs e)
+        {
+            AnotherUserConfirmFriendRequest?.Invoke(sender, e);
         }
         //用户登录
         public void Login(string input_ID, string input_PW)
@@ -224,7 +230,7 @@ namespace FakeQQ_Client
             }
             //在本地的好友列表里面加一项
             JavaScriptSerializer js = new JavaScriptSerializer();
-            dynamic content = js.Deserialize<dynamic>(Content);
+            dynamic content = js.Deserialize<dynamic>(Content.Replace("\0", ""));
             string newFriend = content["UserID"];
             friendList.Add(newFriend);
         }
@@ -239,42 +245,42 @@ namespace FakeQQ_Client
                 //接下根据packet内的commandNo进行各种不同操作
                 switch (packet.CommandNo)
                 {
-                    case 1:
+                    case 1://登录成功
                         {
                             //发布登录成功事件
                             Console.WriteLine("login success event occur");
                             ToLoginSuccess(null, packet);
                             break;
                         }
-                    case 2:
+                    case 2://登录失败
                         {
                             //发布登录失败事件
                             Console.WriteLine("login fail event occur");
                             ToLoginFail(null, null);
                             break;
                         }
-                    case 3:
+                    case 3://注册成功
                         {
                             //发布注册成功事件
                             Console.WriteLine("register success! event occur");
                             ToRegisterSuccess(null, packet);
                             break;
                         }
-                    case 4:
+                    case 4://注册失败
                         {
                             //发布注册失败事件
                             Console.WriteLine("register fail! event occur");
                             ToRegisterFail(null, null);
                             break;
                         }
-                    case 12:
+                    case 12://添加好友失败
                         {
-                            //发布自己添加好友失败事件
+                            //发布添加好友失败事件
                             Console.WriteLine("friend request fail! event occur");
                             ToFriendRequestFail(null, packet);
                             break;
                         }
-                    case 17:
+                    case 17://下载好友列表成功
                         {
                             //发布下载好友列表成功事件
                             Console.WriteLine("download friend list success event occur");
@@ -284,17 +290,28 @@ namespace FakeQQ_Client
                             friendList = js.Deserialize<ArrayList>(packet.Content.Replace("\0", ""));
                             break;
                         }
-                    case 18:
+                    case 18://下载好友列表失败
                         {
                             //并没有发布下载好友列表失败事件
                             Console.WriteLine("download friend list fail event occur");
                             break;
                         }
-                    case 19:
+                    case 19://有其他用户请求添加好友
                         {
                             //发布有其他用户请求添加好友事件
                             Console.WriteLine("a user want to be your friend!");
                             ToAnotherUserFriendRequest(null, packet);
+                            break;
+                        }
+                    case 20://接收好友申请的用户同意了自己的好友申请
+                        {
+                            JavaScriptSerializer js = new JavaScriptSerializer();
+                            dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+                            string FriendID = content["FriendID"];
+                            //在逻辑层更新好友列表
+                            friendList.Add(FriendID);
+                            //发布事件，让界面层显示新的好友列表
+                            ToAnotherUserConfirmFriendRequest(null, null);
                             break;
                         }
                     default:

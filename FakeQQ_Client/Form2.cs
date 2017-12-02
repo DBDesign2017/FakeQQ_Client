@@ -28,6 +28,7 @@ namespace FakeQQ_Client
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
             ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
+            ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -41,6 +42,10 @@ namespace FakeQQ_Client
         private void button1_Click(object sender, EventArgs e)//用户请求添加好友
         {
             string friendID = textBox1.Text.Trim();
+            if(textBox1.Text.Trim() == "")
+            {
+                return;
+            }
             if(friendID == UserID)
             {
                 friendRequestWarningLabel.Text = "错误：不能加自己为好友";
@@ -98,13 +103,42 @@ namespace FakeQQ_Client
         }
         private void AnotherUserFriendRequest(object sender, EventArgs e)
         {
-            DataPacket packet = (DataPacket)e;
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
-            string UserID = content["UserID"];
-            if (MessageBox.Show("用户" + UserID + "申请成为你的好友，是否同意？", "新的好友申请", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (listView1.InvokeRequired)
             {
-                c.ConfirmFriendRequest(packet.Content);
+                ChangeControl CC = new ChangeControl(AnotherUserFriendRequest);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                DataPacket packet = (DataPacket)e;
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+                string UserID = content["UserID"];
+                if (MessageBox.Show("用户" + UserID + "申请成为你的好友，是否同意？", "新的好友申请", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    c.ConfirmFriendRequest(packet.Content);
+                }
+                listView1.Clear();
+                for(int i=0; i<c.friendList.Count; i++)
+                {
+                    listView1.Items.Add(c.friendList[i].ToString());
+                }
+            }
+        }
+        private void AnotherUserConfirmFriendRequest(object sender, EventArgs e)
+        {
+            if (listView1.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(AnotherUserConfirmFriendRequest);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                listView1.Clear();
+                for (int i = 0; i < c.friendList.Count; i++)
+                {
+                    listView1.Items.Add(c.friendList[i].ToString());
+                }
             }
         }
     }
