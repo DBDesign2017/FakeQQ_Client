@@ -29,6 +29,7 @@ namespace FakeQQ_Client
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
             ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
             ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
+            ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -139,6 +140,19 @@ namespace FakeQQ_Client
                 {
                     listView1.Items.Add(c.friendList[i].ToString());
                 }
+            }
+        }
+        private void RecieveSystemMessage(object sender, EventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(RecieveSystemMessage);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                DataPacket packet = (DataPacket)e;
+                MessageBox.Show(packet.Content.Replace("\0", ""), "系统消息");
             }
         }
     }

@@ -69,6 +69,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler FriendRequestFail;
         public static event CrossThreadCallControlHandler AnotherUserFriendRequest;
         public static event CrossThreadCallControlHandler AnotherUserConfirmFriendRequest;
+        public static event CrossThreadCallControlHandler RecieveSystemMessage;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -101,6 +102,11 @@ namespace FakeQQ_Client
         {
             AnotherUserConfirmFriendRequest?.Invoke(sender, e);
         }
+        private static void ToRecieveSystemMessage(object sender, EventArgs e)
+        {
+            RecieveSystemMessage?.Invoke(sender, e);
+        }
+
         //用户登录
         public void Login(string input_ID, string input_PW)
         {
@@ -312,6 +318,12 @@ namespace FakeQQ_Client
                             friendList.Add(FriendID);
                             //发布事件，让界面层显示新的好友列表
                             ToAnotherUserConfirmFriendRequest(null, null);
+                            break;
+                        }
+                    case 24://接收到系统消息
+                        {
+                            //发布收到系统消息事件
+                            ToRecieveSystemMessage(null, packet);
                             break;
                         }
                     default:
