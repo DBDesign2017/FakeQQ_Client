@@ -13,9 +13,8 @@ namespace FakeQQ_Client
 {
     public class ClientOperation
     {
-        private Form2 Form;
         private Socket client;
-        public ArrayList friendList;//里面存的都是string类型的好友的ID，以后可以存储别的东西，反正是object都可以放进去
+        public ArrayList friendList;
 
         public ClientOperation()
         {
@@ -234,7 +233,7 @@ namespace FakeQQ_Client
             {
                 Console.WriteLine(e.ToString());
             }
-            //在本地的好友列表里面加一项
+            //在本地的好友列表里面加一项，要修改
             JavaScriptSerializer js = new JavaScriptSerializer();
             dynamic content = js.Deserialize<dynamic>(Content.Replace("\0", ""));
             string newFriend = content["UserID"];
@@ -288,12 +287,23 @@ namespace FakeQQ_Client
                         }
                     case 17://下载好友列表成功
                         {
+                            //在逻辑层更新好友列表
+                            friendList = new ArrayList();
+                            JavaScriptSerializer js = new JavaScriptSerializer();
+                            dynamic temp = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+                            for(int i=0; i<temp.Length; i++)
+                            {
+                                FriendListItem item = new FriendListItem();
+                                item.UserID = temp[i]["UserID"];
+                                item.IsOnline = temp[i]["IsOnline"];
+                                if(item != null)
+                                {
+                                    friendList.Add(item);
+                                }
+                            }
                             //发布下载好友列表成功事件
                             Console.WriteLine("download friend list success event occur");
-                            ToDownloadFriendListSuccess(null, packet);
-                            //在逻辑层更新好友列表
-                            JavaScriptSerializer js = new JavaScriptSerializer();
-                            friendList = js.Deserialize<ArrayList>(packet.Content.Replace("\0", ""));
+                            ToDownloadFriendListSuccess(null, null);
                             break;
                         }
                     case 18://下载好友列表失败
@@ -309,7 +319,7 @@ namespace FakeQQ_Client
                             ToAnotherUserFriendRequest(null, packet);
                             break;
                         }
-                    case 20://接收好友申请的用户同意了自己的好友申请
+                    case 20://接收好友申请的用户同意了自己的好友申请，要修改
                         {
                             JavaScriptSerializer js = new JavaScriptSerializer();
                             dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));

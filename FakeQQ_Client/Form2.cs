@@ -72,21 +72,33 @@ namespace FakeQQ_Client
         }
         private void DownloadFriendListSuccess(object sender, EventArgs e)
         {
-            DataPacket packet = (DataPacket)e;
-            JavaScriptSerializer js = new JavaScriptSerializer();
-            ArrayList friendList = js.Deserialize<ArrayList>(packet.Content.Replace("\0", ""));
-            if (listView1.InvokeRequired)
+            if (friendListView.InvokeRequired)
             {
                 ChangeControl CC = new ChangeControl(DownloadFriendListSuccess);
                 this.Invoke(CC, sender, e);
             }
             else
             {
-                listView1.Clear();
-                for(int i=0; i<friendList.Count; i++)
+                friendListView.Clear();
+                //friendListView.Columns.Add("好友", 120);
+                //friendListView.Columns.Add("状态", 120);
+                friendListView.BeginUpdate();
+                for(int i=0; i<c.friendList.Count; i++)
                 {
-                    listView1.Items.Add(friendList[i].ToString());
+                    string UserID = ((FriendListItem)c.friendList[i]).UserID;
+                    string IsOnline = "";
+                    if(((FriendListItem)c.friendList[i]).IsOnline == true)
+                    {
+                        IsOnline = "在线";
+                    }
+                    else
+                    {
+                        IsOnline = "离线";
+                    }
+                    ListViewItem item = new ListViewItem(new string[] { UserID, IsOnline });
+                    friendListView.Items.Add(item);
                 }
+                friendListView.EndUpdate();
             }
         }
         private void FriendRequestFail(object sender, EventArgs e)
@@ -104,7 +116,7 @@ namespace FakeQQ_Client
         }
         private void AnotherUserFriendRequest(object sender, EventArgs e)
         {
-            if (listView1.InvokeRequired)
+            if (friendListView.InvokeRequired)
             {
                 ChangeControl CC = new ChangeControl(AnotherUserFriendRequest);
                 this.Invoke(CC, sender, e);
@@ -119,26 +131,26 @@ namespace FakeQQ_Client
                 {
                     c.ConfirmFriendRequest(packet.Content);
                 }
-                listView1.Clear();
+                friendListView.Clear();
                 for(int i=0; i<c.friendList.Count; i++)
                 {
-                    listView1.Items.Add(c.friendList[i].ToString());
+                    friendListView.Items.Add(c.friendList[i].ToString());
                 }
             }
         }
         private void AnotherUserConfirmFriendRequest(object sender, EventArgs e)
         {
-            if (listView1.InvokeRequired)
+            if (friendListView.InvokeRequired)
             {
                 ChangeControl CC = new ChangeControl(AnotherUserConfirmFriendRequest);
                 this.Invoke(CC, sender, e);
             }
             else
             {
-                listView1.Clear();
+                friendListView.Clear();
                 for (int i = 0; i < c.friendList.Count; i++)
                 {
-                    listView1.Items.Add(c.friendList[i].ToString());
+                    friendListView.Items.Add(c.friendList[i].ToString());
                 }
             }
         }

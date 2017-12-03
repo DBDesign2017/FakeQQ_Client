@@ -31,7 +31,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.friendListView = new System.Windows.Forms.ListView();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.friendRequestWarningLabel = new System.Windows.Forms.Label();
@@ -69,7 +69,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.listView1);
+            this.groupBox2.Controls.Add(this.friendListView);
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Location = new System.Drawing.Point(7, 120);
             this.groupBox2.Name = "groupBox2";
@@ -78,16 +78,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "好友列表";
             // 
-            // listView1
+            // friendListView
             // 
-            this.listView1.FullRowSelect = true;
-            this.listView1.Location = new System.Drawing.Point(6, 20);
-            this.listView1.MultiSelect = false;
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(500, 223);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.friendListView.FullRowSelect = true;
+            this.friendListView.Location = new System.Drawing.Point(6, 20);
+            this.friendListView.MultiSelect = false;
+            this.friendListView.Name = "friendListView";
+            this.friendListView.Size = new System.Drawing.Size(500, 223);
+            this.friendListView.TabIndex = 1;
+            this.friendListView.UseCompatibleStateImageBehavior = false;
+            this.friendListView.View = System.Windows.Forms.View.List;
             // 
             // button2
             // 
@@ -178,7 +178,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView friendListView;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox1;
