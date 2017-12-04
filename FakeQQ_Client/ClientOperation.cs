@@ -69,6 +69,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler AnotherUserFriendRequest;
         public static event CrossThreadCallControlHandler AnotherUserConfirmFriendRequest;
         public static event CrossThreadCallControlHandler RecieveSystemMessage;
+        public static event CrossThreadCallControlHandler UpdateFriendListView;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -104,6 +105,10 @@ namespace FakeQQ_Client
         private static void ToRecieveSystemMessage(object sender, EventArgs e)
         {
             RecieveSystemMessage?.Invoke(sender, e);
+        }
+        private static void ToUpdateFriendListView(object sender, EventArgs e)
+        {
+            UpdateFriendListView?.Invoke(sender, e);
         }
 
         //用户登录
@@ -334,6 +339,23 @@ namespace FakeQQ_Client
                         {
                             //发布收到系统消息事件
                             ToRecieveSystemMessage(null, packet);
+                            break;
+                        }
+                    case 25://某个好友上线了
+                        {
+                            Console.WriteLine("recieve callback case 25 a friendLogin");
+                            //在逻辑层更新好友列表
+                            string ID = packet.Content.Replace("\0", "");
+                            for(int i=0; i<friendList.Count; i++)
+                            {
+                                if (((FriendListItem)friendList[i]).UserID == ID)
+                                {
+                                    ((FriendListItem)friendList[i]).IsOnline = true;
+                                    break;
+                                }
+                            }
+                            //发布需要在界面层刷新好友列表事件
+                            ToUpdateFriendListView(null, null);
                             break;
                         }
                     default:

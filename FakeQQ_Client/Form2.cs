@@ -27,9 +27,10 @@ namespace FakeQQ_Client
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
-            ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
-            ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
+            //ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
+            //ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
+            ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -80,10 +81,11 @@ namespace FakeQQ_Client
             else
             {
                 friendListView.Clear();
-                //friendListView.Columns.Add("好友", 120);
-                //friendListView.Columns.Add("状态", 120);
                 friendListView.BeginUpdate();
-                for(int i=0; i<c.friendList.Count; i++)
+                friendListView.Columns.Add("好友");
+                friendListView.Columns.Add("状态");
+                friendListView.View = View.Details;
+                for (int i=0; i<c.friendList.Count; i++)
                 {
                     string UserID = ((FriendListItem)c.friendList[i]).UserID;
                     string IsOnline = "";
@@ -95,7 +97,8 @@ namespace FakeQQ_Client
                     {
                         IsOnline = "离线";
                     }
-                    ListViewItem item = new ListViewItem(new string[] { UserID, IsOnline });
+                    string[] s = { UserID, IsOnline };
+                    ListViewItem item = new ListViewItem(s);
                     friendListView.Items.Add(item);
                 }
                 friendListView.EndUpdate();
@@ -114,7 +117,7 @@ namespace FakeQQ_Client
                 friendRequestWarningLabel.Text = packet.Content.Replace("\0", "");
             }
         }
-        private void AnotherUserFriendRequest(object sender, EventArgs e)
+        /*private void AnotherUserFriendRequest(object sender, EventArgs e)
         {
             if (friendListView.InvokeRequired)
             {
@@ -137,7 +140,8 @@ namespace FakeQQ_Client
                     friendListView.Items.Add(c.friendList[i].ToString());
                 }
             }
-        }
+        }*/
+        /*
         private void AnotherUserConfirmFriendRequest(object sender, EventArgs e)
         {
             if (friendListView.InvokeRequired)
@@ -153,7 +157,7 @@ namespace FakeQQ_Client
                     friendListView.Items.Add(c.friendList[i].ToString());
                 }
             }
-        }
+        }*/
         private void RecieveSystemMessage(object sender, EventArgs e)
         {
             if (this.InvokeRequired)
@@ -165,6 +169,39 @@ namespace FakeQQ_Client
             {
                 DataPacket packet = (DataPacket)e;
                 MessageBox.Show(packet.Content.Replace("\0", ""), "系统消息");
+            }
+        }
+        private void UpdateFriendListView(object sender, EventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(UpdateFriendListView);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                friendListView.Clear();
+                friendListView.BeginUpdate();
+                friendListView.Columns.Add("好友");
+                friendListView.Columns.Add("状态");
+                friendListView.View = View.Details;
+                for (int i = 0; i < c.friendList.Count; i++)
+                {
+                    string UserID = ((FriendListItem)c.friendList[i]).UserID;
+                    string IsOnline = "";
+                    if (((FriendListItem)c.friendList[i]).IsOnline == true)
+                    {
+                        IsOnline = "在线";
+                    }
+                    else
+                    {
+                        IsOnline = "离线";
+                    }
+                    string[] s = { UserID, IsOnline };
+                    ListViewItem item = new ListViewItem(s);
+                    friendListView.Items.Add(item);
+                }
+                friendListView.EndUpdate();
             }
         }
     }
