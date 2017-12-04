@@ -238,11 +238,14 @@ namespace FakeQQ_Client
             {
                 Console.WriteLine(e.ToString());
             }
-            //在本地的好友列表里面加一项，要修改
+            //在本地的好友列表里面加一项
             JavaScriptSerializer js = new JavaScriptSerializer();
             dynamic content = js.Deserialize<dynamic>(Content.Replace("\0", ""));
+            FriendListItem item = new FriendListItem();
             string newFriend = content["UserID"];
-            friendList.Add(newFriend);
+            item.UserID = newFriend;
+            item.IsOnline = true;
+            friendList.Add(item);
         }
         private void RecieveCallback(IAsyncResult iar)
         {
@@ -328,9 +331,12 @@ namespace FakeQQ_Client
                         {
                             JavaScriptSerializer js = new JavaScriptSerializer();
                             dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
-                            string FriendID = content["FriendID"];
+                            string ID = content["FriendID"];
+                            FriendListItem item = new FriendListItem();
+                            item.UserID = ID;
+                            item.IsOnline = true;
                             //在逻辑层更新好友列表
-                            friendList.Add(FriendID);
+                            friendList.Add(item);
                             //发布事件，让界面层显示新的好友列表
                             ToAnotherUserConfirmFriendRequest(null, null);
                             break;

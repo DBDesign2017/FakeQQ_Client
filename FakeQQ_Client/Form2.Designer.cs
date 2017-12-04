@@ -31,6 +31,10 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.friendListView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.friendRequestWarningLabel = new System.Windows.Forms.Label();
@@ -38,10 +42,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.friendListView = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -80,6 +80,21 @@
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "好友列表";
+            // 
+            // friendListView
+            // 
+            this.friendListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3});
+            this.friendListView.FullRowSelect = true;
+            this.friendListView.Location = new System.Drawing.Point(6, 20);
+            this.friendListView.MultiSelect = false;
+            this.friendListView.Name = "friendListView";
+            this.friendListView.Size = new System.Drawing.Size(500, 223);
+            this.friendListView.TabIndex = 1;
+            this.friendListView.UseCompatibleStateImageBehavior = false;
+            this.friendListView.View = System.Windows.Forms.View.List;
             // 
             // button2
             // 
@@ -147,21 +162,6 @@
             this.tabPage2.Text = "聊天窗口";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // friendListView
-            // 
-            this.friendListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
-            this.friendListView.FullRowSelect = true;
-            this.friendListView.Location = new System.Drawing.Point(6, 20);
-            this.friendListView.MultiSelect = false;
-            this.friendListView.Name = "friendListView";
-            this.friendListView.Size = new System.Drawing.Size(500, 223);
-            this.friendListView.TabIndex = 1;
-            this.friendListView.UseCompatibleStateImageBehavior = false;
-            this.friendListView.View = System.Windows.Forms.View.List;
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -169,7 +169,6 @@
             this.ClientSize = new System.Drawing.Size(557, 451);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form2";
-            this.Text = "FakeQQ";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

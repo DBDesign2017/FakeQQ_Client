@@ -21,14 +21,14 @@ namespace FakeQQ_Client
         public Form2(ClientOperation c, string UserID)
         {
             this.UserID = UserID;
-            this.Text = "FakeQQ " + UserID;
+            Text = "FakeQQ 用户：" + UserID;
             this.c = c;
             this.c.DownloadFriendList(UserID);//从服务器更新好友列表
             InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
-            //ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
-            //ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
+            ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
+            ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
             ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
         }
@@ -117,7 +117,7 @@ namespace FakeQQ_Client
                 friendRequestWarningLabel.Text = packet.Content.Replace("\0", "");
             }
         }
-        /*private void AnotherUserFriendRequest(object sender, EventArgs e)
+        private void AnotherUserFriendRequest(object sender, EventArgs e)
         {
             if (friendListView.InvokeRequired)
             {
@@ -129,19 +129,38 @@ namespace FakeQQ_Client
                 DataPacket packet = (DataPacket)e;
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
-                string UserID = content["UserID"];
-                if (MessageBox.Show("用户" + UserID + "申请成为你的好友，是否同意？", "新的好友申请", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                string temp = content["UserID"];
+                if (MessageBox.Show("用户" + temp + "申请成为你的好友，是否同意？", "新的好友申请", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
+                    //在逻辑层更新好友列表
                     c.ConfirmFriendRequest(packet.Content);
-                }
-                friendListView.Clear();
-                for(int i=0; i<c.friendList.Count; i++)
-                {
-                    friendListView.Items.Add(c.friendList[i].ToString());
+                    //刷新界面层的好友列表
+                    friendListView.Clear();
+                    friendListView.BeginUpdate();
+                    friendListView.Columns.Add("好友");
+                    friendListView.Columns.Add("状态");
+                    friendListView.View = View.Details;
+                    for (int i = 0; i < c.friendList.Count; i++)
+                    {
+                        string UserID = ((FriendListItem)c.friendList[i]).UserID;
+                        string IsOnline = "";
+                        if (((FriendListItem)c.friendList[i]).IsOnline == true)
+                        {
+                            IsOnline = "在线";
+                        }
+                        else
+                        {
+                            IsOnline = "离线";
+                        }
+                        string[] s = { UserID, IsOnline };
+                        ListViewItem item = new ListViewItem(s);
+                        friendListView.Items.Add(item);
+                    }
+                    friendListView.EndUpdate();
                 }
             }
-        }*/
-        /*
+        }
+        
         private void AnotherUserConfirmFriendRequest(object sender, EventArgs e)
         {
             if (friendListView.InvokeRequired)
@@ -152,12 +171,29 @@ namespace FakeQQ_Client
             else
             {
                 friendListView.Clear();
+                friendListView.BeginUpdate();
+                friendListView.Columns.Add("好友");
+                friendListView.Columns.Add("状态");
+                friendListView.View = View.Details;
                 for (int i = 0; i < c.friendList.Count; i++)
                 {
-                    friendListView.Items.Add(c.friendList[i].ToString());
+                    string UserID = ((FriendListItem)c.friendList[i]).UserID;
+                    string IsOnline = "";
+                    if (((FriendListItem)c.friendList[i]).IsOnline == true)
+                    {
+                        IsOnline = "在线";
+                    }
+                    else
+                    {
+                        IsOnline = "离线";
+                    }
+                    string[] s = { UserID, IsOnline };
+                    ListViewItem item = new ListViewItem(s);
+                    friendListView.Items.Add(item);
                 }
+                friendListView.EndUpdate();
             }
-        }*/
+        }
         private void RecieveSystemMessage(object sender, EventArgs e)
         {
             if (this.InvokeRequired)
