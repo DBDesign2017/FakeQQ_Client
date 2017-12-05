@@ -70,6 +70,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler AnotherUserConfirmFriendRequest;
         public static event CrossThreadCallControlHandler RecieveSystemMessage;
         public static event CrossThreadCallControlHandler UpdateFriendListView;
+        public static event CrossThreadCallControlHandler RecieveMessage;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -110,7 +111,10 @@ namespace FakeQQ_Client
         {
             UpdateFriendListView?.Invoke(sender, e);
         }
-
+        private static void ToRecieveMessage(object sender, EventArgs e)
+        {
+            RecieveMessage?.Invoke(sender, e);
+        }
         //用户登录
         public void Login(string input_ID, string input_PW)
         {
@@ -247,6 +251,31 @@ namespace FakeQQ_Client
             item.IsOnline = true;
             friendList.Add(item);
         }
+
+        //请求发送即时消息
+        public void SendMessage(string text, string UserID, string targetUserID, DateTime time)
+        {
+            //构造数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 11;
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            //处理数据包的Content部分
+            Message message = new FakeQQ_Client.Message(text, UserID, targetUserID, time);
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            packet.Content = js.Serialize(message);
+            //发送！
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;
@@ -341,6 +370,12 @@ namespace FakeQQ_Client
                             ToAnotherUserConfirmFriendRequest(null, null);
                             break;
                         }
+                    case 21://来自其他用户的即时消息
+                        {
+                            Console.WriteLine("recieve callback case 21");
+                            ToRecieveMessage(null, packet);
+                            break;
+                        }
                     case 24://接收到系统消息
                         {
                             //发布收到系统消息事件
@@ -362,6 +397,10 @@ namespace FakeQQ_Client
                             }
                             //发布需要在界面层刷新好友列表事件
                             ToUpdateFriendListView(null, null);
+                            break;
+                        }
+                    case 26://自己发送的即时消息失败了
+                        {
                             break;
                         }
                     default:

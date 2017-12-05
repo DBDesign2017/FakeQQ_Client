@@ -48,6 +48,11 @@ namespace FakeQQ_Client
                 {
                     Application.Run(new Form2(c, packet.Content.Replace("\0", "")));
                 }).Start();
+                //不解绑内存会不会泄露？
+                /*ClientOperation.LoginSuccess -= LoginSuccess;
+                ClientOperation.LoginFail -= LoginFail;
+                ClientOperation.RegisterSuccess -= RegisterSuccess;
+                ClientOperation.RegisterFail -= RegisterFail;*/
                 this.Close();
             }
         }

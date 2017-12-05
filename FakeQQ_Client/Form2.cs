@@ -18,9 +18,11 @@ namespace FakeQQ_Client
     {
         private ClientOperation c;
         private string UserID;
+        private string chattingFriendID;
         public Form2(ClientOperation c, string UserID)
         {
             this.UserID = UserID;
+            this.chattingFriendID = "";
             Text = "FakeQQ 用户：" + UserID;
             this.c = c;
             this.c.DownloadFriendList(UserID);//从服务器更新好友列表
@@ -31,6 +33,7 @@ namespace FakeQQ_Client
             ClientOperation.AnotherUserConfirmFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserConfirmFriendRequest);
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
             ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
+            ClientOperation.RecieveMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveMessage);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -70,6 +73,38 @@ namespace FakeQQ_Client
             {
                 c.FriendRequest(UserID, friendID);
             }
+        }
+        private void chatButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string friendID = friendListView.SelectedItems[0].Text;
+                bool isOnline = true;
+                for(int i=0; i<c.friendList.Count; i++)
+                {
+                    if(((FriendListItem)c.friendList[i]).UserID == friendID)
+                    {
+                        isOnline = ((FriendListItem)c.friendList[i]).IsOnline;
+                    }
+                }
+                if (isOnline)
+                {
+                    tabControl1.SelectedTab = tabPage2;//切换选项卡
+                    chattingFriendLabel.Text = "正在与" + friendID + "聊天";
+                    chattingFriendID = friendID;
+                }
+            }
+            catch { }
+        }
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            if (sendTextBox.Text == "")
+                return;
+            DateTime time = DateTime.Now;
+            messageTextBox.AppendText(DateTime.Now.ToString() + "  用户：" + UserID + "\n");
+            messageTextBox.AppendText(" " + sendTextBox.Text.Trim() + "\n\n");
+            c.SendMessage(sendTextBox.Text.Trim(), UserID, chattingFriendID, time);
+            sendTextBox.Text = "";
         }
         private void DownloadFriendListSuccess(object sender, EventArgs e)
         {
@@ -160,7 +195,6 @@ namespace FakeQQ_Client
                 }
             }
         }
-        
         private void AnotherUserConfirmFriendRequest(object sender, EventArgs e)
         {
             if (friendListView.InvokeRequired)
@@ -238,6 +272,37 @@ namespace FakeQQ_Client
                     friendListView.Items.Add(item);
                 }
                 friendListView.EndUpdate();
+            }
+        }
+        private void RecieveMessage(object sender, EventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(RecieveMessage);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                DataPacket packet = (DataPacket)e;
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+                string SourceUserID = content["SourceUserID"];
+                string Text = content["Text"];
+                DateTime time = content["Time"];
+                tabControl1.SelectedTab = tabPage2;//切换选项卡
+                if (chattingFriendID == SourceUserID)
+                {
+                    messageTextBox.AppendText(time.ToString() + "  用户：" + SourceUserID + "\n");
+                    messageTextBox.AppendText(" " + Text + "\n\n");
+                }
+                else
+                {
+                    chattingFriendID = SourceUserID;
+                    chattingFriendLabel.Text = "正在与" + SourceUserID + "聊天";
+                    messageTextBox.Clear();
+                    messageTextBox.AppendText(time.ToString() + "  用户：" + SourceUserID + "\n");
+                    messageTextBox.AppendText(" " + Text + "\n\n");
+                }
             }
         }
     }

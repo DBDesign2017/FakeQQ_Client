@@ -35,17 +35,22 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button2 = new System.Windows.Forms.Button();
+            this.chatButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.friendRequestWarningLabel = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.sendFriendRequestButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.chattingFriendLabel = new System.Windows.Forms.Label();
+            this.messageTextBox = new System.Windows.Forms.TextBox();
+            this.sendTextBox = new System.Windows.Forms.TextBox();
+            this.sendButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -73,7 +78,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.friendListView);
-            this.groupBox2.Controls.Add(this.button2);
+            this.groupBox2.Controls.Add(this.chatButton);
             this.groupBox2.Location = new System.Drawing.Point(7, 120);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(512, 278);
@@ -96,19 +101,20 @@
             this.friendListView.UseCompatibleStateImageBehavior = false;
             this.friendListView.View = System.Windows.Forms.View.List;
             // 
-            // button2
+            // chatButton
             // 
-            this.button2.Location = new System.Drawing.Point(431, 249);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "聊天";
-            this.button2.UseVisualStyleBackColor = true;
+            this.chatButton.Location = new System.Drawing.Point(431, 249);
+            this.chatButton.Name = "chatButton";
+            this.chatButton.Size = new System.Drawing.Size(75, 23);
+            this.chatButton.TabIndex = 2;
+            this.chatButton.Text = "聊天";
+            this.chatButton.UseVisualStyleBackColor = true;
+            this.chatButton.Click += new System.EventHandler(this.chatButton_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.friendRequestWarningLabel);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.sendFriendRequestButton);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(7, 7);
@@ -126,15 +132,15 @@
             this.friendRequestWarningLabel.Size = new System.Drawing.Size(0, 12);
             this.friendRequestWarningLabel.TabIndex = 4;
             // 
-            // button1
+            // sendFriendRequestButton
             // 
-            this.button1.Location = new System.Drawing.Point(236, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(93, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "发送好友申请";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.sendFriendRequestButton.Location = new System.Drawing.Point(236, 19);
+            this.sendFriendRequestButton.Name = "sendFriendRequestButton";
+            this.sendFriendRequestButton.Size = new System.Drawing.Size(93, 23);
+            this.sendFriendRequestButton.TabIndex = 2;
+            this.sendFriendRequestButton.Text = "发送好友申请";
+            this.sendFriendRequestButton.UseVisualStyleBackColor = true;
+            this.sendFriendRequestButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
@@ -154,6 +160,10 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.sendButton);
+            this.tabPage2.Controls.Add(this.sendTextBox);
+            this.tabPage2.Controls.Add(this.messageTextBox);
+            this.tabPage2.Controls.Add(this.chattingFriendLabel);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -161,6 +171,43 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "聊天窗口";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // chattingFriendLabel
+            // 
+            this.chattingFriendLabel.AutoSize = true;
+            this.chattingFriendLabel.Location = new System.Drawing.Point(7, 7);
+            this.chattingFriendLabel.Name = "chattingFriendLabel";
+            this.chattingFriendLabel.Size = new System.Drawing.Size(41, 12);
+            this.chattingFriendLabel.TabIndex = 0;
+            this.chattingFriendLabel.Text = "label2";
+            // 
+            // messageTextBox
+            // 
+            this.messageTextBox.Location = new System.Drawing.Point(9, 23);
+            this.messageTextBox.Multiline = true;
+            this.messageTextBox.Name = "messageTextBox";
+            this.messageTextBox.ReadOnly = true;
+            this.messageTextBox.Size = new System.Drawing.Size(510, 236);
+            this.messageTextBox.TabIndex = 1;
+            // 
+            // sendTextBox
+            // 
+            this.sendTextBox.Location = new System.Drawing.Point(9, 265);
+            this.sendTextBox.MaxLength = 100;
+            this.sendTextBox.Multiline = true;
+            this.sendTextBox.Name = "sendTextBox";
+            this.sendTextBox.Size = new System.Drawing.Size(510, 92);
+            this.sendTextBox.TabIndex = 2;
+            // 
+            // sendButton
+            // 
+            this.sendButton.Location = new System.Drawing.Point(444, 367);
+            this.sendButton.Name = "sendButton";
+            this.sendButton.Size = new System.Drawing.Size(75, 23);
+            this.sendButton.TabIndex = 3;
+            this.sendButton.Text = "发送";
+            this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // Form2
             // 
@@ -175,6 +222,8 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -183,9 +232,9 @@
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button chatButton;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button sendFriendRequestButton;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -195,5 +244,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.Button sendButton;
+        private System.Windows.Forms.TextBox sendTextBox;
+        private System.Windows.Forms.TextBox messageTextBox;
+        private System.Windows.Forms.Label chattingFriendLabel;
     }
 }
