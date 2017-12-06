@@ -98,7 +98,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="message.wav" />
     <Content Include="开发日志.txt" />
+    <Content Include="无标题.ico" />
     <Content Include="约定.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

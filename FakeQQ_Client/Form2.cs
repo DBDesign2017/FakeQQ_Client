@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Web.Script.Serialization;
-
+using System.Media;
 
 namespace FakeQQ_Client
 {
@@ -26,7 +26,6 @@ namespace FakeQQ_Client
             Text = "FakeQQ 用户：" + UserID;
             this.c = c;
             this.c.DownloadFriendList(UserID);//从服务器更新好友列表
-            InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
             ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
@@ -34,13 +33,14 @@ namespace FakeQQ_Client
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
             ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
             ClientOperation.RecieveMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveMessage);
+            InitializeComponent();
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MessageBox.Show("退出程序");
+            //notifyIcon1.Dispose();
             Application.Exit();
         }
 
@@ -115,6 +115,7 @@ namespace FakeQQ_Client
             }
             else
             {
+                //MessageBox.Show("form2.cs 118");
                 friendListView.Clear();
                 friendListView.BeginUpdate();
                 friendListView.Columns.Add("好友");
@@ -283,6 +284,14 @@ namespace FakeQQ_Client
             }
             else
             {
+                //播放声音
+                SoundPlayer player = new SoundPlayer();
+                player.SoundLocation = "C:\\Data\\c#\\FakeQQ_Client\\FakeQQ_Client\\message.wav";
+                player.Load();
+                player.Play();
+                //闪烁托盘图标
+
+                //显示消息
                 DataPacket packet = (DataPacket)e;
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));

@@ -42,10 +42,10 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.chattingFriendLabel = new System.Windows.Forms.Label();
-            this.messageTextBox = new System.Windows.Forms.TextBox();
-            this.sendTextBox = new System.Windows.Forms.TextBox();
             this.sendButton = new System.Windows.Forms.Button();
+            this.sendTextBox = new System.Windows.Forms.TextBox();
+            this.messageTextBox = new System.Windows.Forms.TextBox();
+            this.chattingFriendLabel = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -172,23 +172,15 @@
             this.tabPage2.Text = "聊天窗口";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // chattingFriendLabel
+            // sendButton
             // 
-            this.chattingFriendLabel.AutoSize = true;
-            this.chattingFriendLabel.Location = new System.Drawing.Point(7, 7);
-            this.chattingFriendLabel.Name = "chattingFriendLabel";
-            this.chattingFriendLabel.Size = new System.Drawing.Size(41, 12);
-            this.chattingFriendLabel.TabIndex = 0;
-            this.chattingFriendLabel.Text = "label2";
-            // 
-            // messageTextBox
-            // 
-            this.messageTextBox.Location = new System.Drawing.Point(9, 23);
-            this.messageTextBox.Multiline = true;
-            this.messageTextBox.Name = "messageTextBox";
-            this.messageTextBox.ReadOnly = true;
-            this.messageTextBox.Size = new System.Drawing.Size(510, 236);
-            this.messageTextBox.TabIndex = 1;
+            this.sendButton.Location = new System.Drawing.Point(444, 367);
+            this.sendButton.Name = "sendButton";
+            this.sendButton.Size = new System.Drawing.Size(75, 23);
+            this.sendButton.TabIndex = 3;
+            this.sendButton.Text = "发送";
+            this.sendButton.UseVisualStyleBackColor = true;
+            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
             // 
             // sendTextBox
             // 
@@ -199,15 +191,23 @@
             this.sendTextBox.Size = new System.Drawing.Size(510, 92);
             this.sendTextBox.TabIndex = 2;
             // 
-            // sendButton
+            // messageTextBox
             // 
-            this.sendButton.Location = new System.Drawing.Point(444, 367);
-            this.sendButton.Name = "sendButton";
-            this.sendButton.Size = new System.Drawing.Size(75, 23);
-            this.sendButton.TabIndex = 3;
-            this.sendButton.Text = "发送";
-            this.sendButton.UseVisualStyleBackColor = true;
-            this.sendButton.Click += new System.EventHandler(this.sendButton_Click);
+            this.messageTextBox.Location = new System.Drawing.Point(9, 23);
+            this.messageTextBox.Multiline = true;
+            this.messageTextBox.Name = "messageTextBox";
+            this.messageTextBox.ReadOnly = true;
+            this.messageTextBox.Size = new System.Drawing.Size(510, 236);
+            this.messageTextBox.TabIndex = 1;
+            // 
+            // chattingFriendLabel
+            // 
+            this.chattingFriendLabel.AutoSize = true;
+            this.chattingFriendLabel.Location = new System.Drawing.Point(7, 7);
+            this.chattingFriendLabel.Name = "chattingFriendLabel";
+            this.chattingFriendLabel.Size = new System.Drawing.Size(41, 12);
+            this.chattingFriendLabel.TabIndex = 0;
+            this.chattingFriendLabel.Text = "label2";
             // 
             // Form2
             // 
