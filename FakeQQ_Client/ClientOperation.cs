@@ -428,6 +428,21 @@ namespace FakeQQ_Client
                         {
                             break;
                         }
+                    case 27:
+                        {
+                            Console.WriteLine("a firend is offline");
+                            string friendID = packet.Content.Replace("\0", "");
+                            for(int i=0; i<friendList.Count; i++)
+                            {
+                                if(((FriendListItem)friendList[i]).UserID == friendID)
+                                {
+                                    ((FriendListItem)friendList[i]).IsOnline = false;
+                                    break;
+                                }
+                            }
+                            ToUpdateFriendListView(null, null);
+                            break;
+                        }
                     default:
                         break;
                 }

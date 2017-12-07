@@ -36,7 +36,7 @@ namespace FakeQQ_Client
             ClientOperation.RecieveMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveMessage);
             //设置向服务器发送心跳包的定时器
             System.Timers.Timer heartBeatTimer = new System.Timers.Timer();
-            heartBeatTimer.Interval = 1000;
+            heartBeatTimer.Interval = 3000;
             heartBeatTimer.Enabled = true;
             heartBeatTimer.Elapsed += new System.Timers.ElapsedEventHandler(c.SendHeartBeatPacket);
         }
