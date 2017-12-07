@@ -52,9 +52,9 @@ namespace FakeQQ_Client
                     Console.WriteLine(e.ToString());
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                MessageBox.Show(e.ToString());
             }
         }
 
@@ -115,6 +115,29 @@ namespace FakeQQ_Client
         {
             RecieveMessage?.Invoke(sender, e);
         }
+        
+        //发送心跳包
+        public void SendHeartBeatPacket(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            //构造数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 254;
+            packet.Content = "";
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            //发送
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch
+            {
+                Console.WriteLine("发送心跳包出错");
+            }
+        }
+        
         //用户登录
         public void Login(string input_ID, string input_PW)
         {

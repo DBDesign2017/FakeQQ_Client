@@ -26,6 +26,7 @@ namespace FakeQQ_Client
             Text = "FakeQQ 用户：" + UserID;
             this.c = c;
             this.c.DownloadFriendList(UserID);//从服务器更新好友列表
+            InitializeComponent();
             ClientOperation.DownloadFriendListSuccess += new ClientOperation.CrossThreadCallControlHandler(DownloadFriendListSuccess);
             ClientOperation.FriendRequestFail += new ClientOperation.CrossThreadCallControlHandler(FriendRequestFail);
             ClientOperation.AnotherUserFriendRequest += new ClientOperation.CrossThreadCallControlHandler(AnotherUserFriendRequest);
@@ -33,14 +34,17 @@ namespace FakeQQ_Client
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
             ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
             ClientOperation.RecieveMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveMessage);
-            InitializeComponent();
+            //设置向服务器发送心跳包的定时器
+            System.Timers.Timer heartBeatTimer = new System.Timers.Timer();
+            heartBeatTimer.Interval = 3000;
+            heartBeatTimer.Enabled = true;
+            heartBeatTimer.Elapsed += new System.Timers.ElapsedEventHandler(c.SendHeartBeatPacket);
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //notifyIcon1.Dispose();
             Application.Exit();
         }
 
