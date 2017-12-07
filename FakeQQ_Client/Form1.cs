@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -23,6 +24,7 @@ namespace FakeQQ_Client
             ClientOperation.LoginFail += new ClientOperation.CrossThreadCallControlHandler(LoginFail);
             ClientOperation.RegisterSuccess += new ClientOperation.CrossThreadCallControlHandler(RegisterSuccess);
             ClientOperation.RegisterFail += new ClientOperation.CrossThreadCallControlHandler(RegisterFail);
+            textBox1.Text = Properties.Settings.Default.LastUserID;
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -44,6 +46,16 @@ namespace FakeQQ_Client
             }
             else
             {
+                //保存登录成功的账号，下次显示
+                string UserID = packet.Content.Replace("\0", "");
+                Properties.Settings.Default.LastUserID = UserID;
+                Properties.Settings.Default.Save();
+                /*string UserID = packet.Content.Replace("\0", "");
+                using (StreamWriter sw = new StreamWriter("LastLogin.txt", true))
+                {
+                    sw.Write(UserID);
+                }*/
+                //打开新窗口
                 new System.Threading.Thread(() =>
                 {
                     Application.Run(new Form2(c, packet.Content.Replace("\0", "")));
