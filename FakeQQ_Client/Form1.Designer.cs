@@ -42,6 +42,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.lastLoginTimeLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -95,6 +96,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.lastLoginTimeLabel);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.button1);
@@ -111,7 +113,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(36, 111);
+            this.label5.Location = new System.Drawing.Point(7, 116);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 12);
             this.label5.TabIndex = 5;
@@ -187,6 +189,14 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "请输入密码：";
             // 
+            // lastLoginTimeLabel
+            // 
+            this.lastLoginTimeLabel.AutoSize = true;
+            this.lastLoginTimeLabel.Location = new System.Drawing.Point(12, 94);
+            this.lastLoginTimeLabel.Name = "lastLoginTimeLabel";
+            this.lastLoginTimeLabel.Size = new System.Drawing.Size(0, 12);
+            this.lastLoginTimeLabel.TabIndex = 6;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -221,6 +231,7 @@
         private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lastLoginTimeLabel;
     }
 }
 

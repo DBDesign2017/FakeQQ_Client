@@ -25,6 +25,7 @@ namespace FakeQQ_Client
             ClientOperation.RegisterSuccess += new ClientOperation.CrossThreadCallControlHandler(RegisterSuccess);
             ClientOperation.RegisterFail += new ClientOperation.CrossThreadCallControlHandler(RegisterFail);
             textBox1.Text = Properties.Settings.Default.LastUserID;
+            lastLoginTimeLabel.Text = "最近登录时间：" + Properties.Settings.Default.LastLoginTime.ToString();
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -49,12 +50,8 @@ namespace FakeQQ_Client
                 //保存登录成功的账号，下次显示
                 string UserID = packet.Content.Replace("\0", "");
                 Properties.Settings.Default.LastUserID = UserID;
+                Properties.Settings.Default.LastLoginTime = DateTime.Now;
                 Properties.Settings.Default.Save();
-                /*string UserID = packet.Content.Replace("\0", "");
-                using (StreamWriter sw = new StreamWriter("LastLogin.txt", true))
-                {
-                    sw.Write(UserID);
-                }*/
                 //打开新窗口
                 new System.Threading.Thread(() =>
                 {

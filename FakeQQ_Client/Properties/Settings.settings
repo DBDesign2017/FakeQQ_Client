@@ -5,5 +5,8 @@
     <Setting Name="LastUserID" Type="System.String" Scope="User">
       <Value Profile="(Default)">20000001</Value>
     </Setting>
+    <Setting Name="LastLoginTime" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
