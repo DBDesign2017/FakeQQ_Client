@@ -15,6 +15,7 @@ namespace FakeQQ_Client
     {
         private Socket client;
         public ArrayList friendList;
+        public string UserID;
 
         public ClientOperation()
         {
@@ -122,7 +123,7 @@ namespace FakeQQ_Client
             //构造数据包
             DataPacket packet = new DataPacket();
             packet.CommandNo = 254;
-            packet.Content = "";
+            packet.Content = UserID;
             packet.FromIP = IPAddress.Parse("127.0.0.2");
             packet.ToIP = IPAddress.Parse("127.0.0.2");
             packet.ComputerName = "client";
@@ -312,6 +313,7 @@ namespace FakeQQ_Client
                 {
                     case 1://登录成功
                         {
+                            UserID = packet.Content.Replace("\0", "");
                             //发布登录成功事件
                             Console.WriteLine("login success event occur");
                             ToLoginSuccess(null, packet);
