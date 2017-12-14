@@ -72,6 +72,7 @@ namespace FakeQQ_Client
         public static event CrossThreadCallControlHandler RecieveSystemMessage;
         public static event CrossThreadCallControlHandler UpdateFriendListView;
         public static event CrossThreadCallControlHandler RecieveMessage;
+        public static event CrossThreadCallControlHandler ChangePasswordResult;
         private static void ToLoginSuccess(object sender, EventArgs e)
         {
             LoginSuccess?.Invoke(sender, e);
@@ -115,6 +116,10 @@ namespace FakeQQ_Client
         private static void ToRecieveMessage(object sender, EventArgs e)
         {
             RecieveMessage?.Invoke(sender, e);
+        }
+        private static void ToChangePasswordResult(object sender, EventArgs e)
+        {
+            ChangePasswordResult?.Invoke(sender, e);
         }
         
         //发送心跳包
@@ -300,6 +305,32 @@ namespace FakeQQ_Client
                 Console.WriteLine(e.ToString());
             }
         }
+
+        //请求修改密码
+        public void ChangePassword(ChangePasswordData data)
+        {
+            //构造要发送的数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 3;
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            //处理数据包的Content部分
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            packet.Content = js.Serialize(data);
+            //发送！
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            return;
+        }
+
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;
@@ -338,6 +369,16 @@ namespace FakeQQ_Client
                             //发布注册失败事件
                             Console.WriteLine("register fail! event occur");
                             ToRegisterFail(null, null);
+                            break;
+                        }
+                    case 5://修改密码成功
+                        {
+                            ToChangePasswordResult(null, packet);
+                            break;
+                        }
+                    case 6://修改密码失败
+                        {
+                            ToChangePasswordResult(null, packet);
                             break;
                         }
                     case 12://添加好友失败
@@ -428,7 +469,7 @@ namespace FakeQQ_Client
                         {
                             break;
                         }
-                    case 27:
+                    case 27://某个好友下线了
                         {
                             Console.WriteLine("a firend is offline");
                             string friendID = packet.Content.Replace("\0", "");

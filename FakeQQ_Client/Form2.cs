@@ -34,11 +34,33 @@ namespace FakeQQ_Client
             ClientOperation.RecieveSystemMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveSystemMessage);
             ClientOperation.UpdateFriendListView += new ClientOperation.CrossThreadCallControlHandler(UpdateFriendListView);
             ClientOperation.RecieveMessage += new ClientOperation.CrossThreadCallControlHandler(RecieveMessage);
+            ClientOperation.ChangePasswordResult += new ClientOperation.CrossThreadCallControlHandler(ChangePasswordResult);
             //设置向服务器发送心跳包的定时器
             System.Timers.Timer heartBeatTimer = new System.Timers.Timer();
             heartBeatTimer.Interval = 3000;
             heartBeatTimer.Enabled = true;
             heartBeatTimer.Elapsed += new System.Timers.ElapsedEventHandler(c.SendHeartBeatPacket);
+        }
+
+        private void ChangePasswordResult(object sender, EventArgs e)
+        {
+            if (this.InvokeRequired)
+            {
+                ChangeControl CC = new ChangeControl(ChangePasswordResult);
+                this.Invoke(CC, sender, e);
+            }
+            else
+            {
+                DataPacket packet = (DataPacket)e;
+                if(packet.CommandNo == 5)
+                {
+                    label_ChangePasswordWarning.Text = "修改成功";
+                }
+                if(packet.CommandNo == 6)
+                {
+                    label_ChangePasswordWarning.Text = "原密码错误！修改失败";
+                }
+            }
         }
 
         private delegate void ChangeControl(object sender, EventArgs e);
@@ -317,6 +339,25 @@ namespace FakeQQ_Client
                     messageTextBox.AppendText(" " + Text + "\n\n");
                 }
             }
+        }
+
+        private void button_pwd_Click(object sender, EventArgs e)
+        {
+            if(textBox_newpwd.Text.Trim() != textBox_againpwd.Text.Trim())
+            {
+                label_ChangePasswordWarning.Text = "两次输入的密码不相同！";
+                return;
+            }
+            if (textBox_newpwd.Text.Length < 8)
+            {
+                label_ChangePasswordWarning.Text = "新密码的长度不足八位！";
+                return;
+            }
+            ChangePasswordData data = new ChangePasswordData();
+            data.UserID = this.UserID;
+            data.OldPassword = textBox_oldpwd.Text.Trim();
+            data.NewPassword = textBox_newpwd.Text.Trim();
+            c.ChangePassword(data);
         }
     }
 }
