@@ -45,7 +45,7 @@ namespace FakeQQ_Client
         private void ChangePasswordResult(object sender, EventArgs e)
         {
             if (this.InvokeRequired)
-            {
+            {   
                 ChangeControl CC = new ChangeControl(ChangePasswordResult);
                 this.Invoke(CC, sender, e);
             }
@@ -358,6 +358,13 @@ namespace FakeQQ_Client
             data.OldPassword = textBox_oldpwd.Text.Trim();
             data.NewPassword = textBox_newpwd.Text.Trim();
             c.ChangePassword(data);
+        }
+
+        private void toolStripMenuItem_DeleteFriend_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection t = friendListView.SelectedItems;
+            string FriendID = t[0].Text;
+            c.DeleteFriend(FriendID);
         }
     }
 }

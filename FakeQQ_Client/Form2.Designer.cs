@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -75,6 +76,8 @@
             this.textBox_newpwd = new System.Windows.Forms.TextBox();
             this.label_oldpwd = new System.Windows.Forms.Label();
             this.textBox_oldpwd = new System.Windows.Forms.TextBox();
+            this.contextMenuStrip_FriendListView = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem_DeleteFriend = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -83,6 +86,7 @@
             this.tabPage3.SuspendLayout();
             this.groupBox_3.SuspendLayout();
             this.groupBox_4.SuspendLayout();
+            this.contextMenuStrip_FriendListView.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -125,6 +129,7 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
+            this.friendListView.ContextMenuStrip = this.contextMenuStrip_FriendListView;
             this.friendListView.FullRowSelect = true;
             this.friendListView.Location = new System.Drawing.Point(6, 20);
             this.friendListView.MultiSelect = false;
@@ -512,6 +517,20 @@
             this.textBox_oldpwd.Size = new System.Drawing.Size(168, 21);
             this.textBox_oldpwd.TabIndex = 17;
             // 
+            // contextMenuStrip_FriendListView
+            // 
+            this.contextMenuStrip_FriendListView.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem_DeleteFriend});
+            this.contextMenuStrip_FriendListView.Name = "contextMenuStrip_FriendListView";
+            this.contextMenuStrip_FriendListView.Size = new System.Drawing.Size(153, 48);
+            // 
+            // toolStripMenuItem_DeleteFriend
+            // 
+            this.toolStripMenuItem_DeleteFriend.Name = "toolStripMenuItem_DeleteFriend";
+            this.toolStripMenuItem_DeleteFriend.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem_DeleteFriend.Text = "删除好友";
+            this.toolStripMenuItem_DeleteFriend.Click += new System.EventHandler(this.toolStripMenuItem_DeleteFriend_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -532,6 +551,7 @@
             this.groupBox_3.PerformLayout();
             this.groupBox_4.ResumeLayout(false);
             this.groupBox_4.PerformLayout();
+            this.contextMenuStrip_FriendListView.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -585,5 +605,7 @@
         private System.Windows.Forms.TextBox textBox_newpwd;
         private System.Windows.Forms.Label label_oldpwd;
         private System.Windows.Forms.TextBox textBox_oldpwd;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip_FriendListView;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_DeleteFriend;
     }
 }

@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangePasswordData.cs" />
+    <Compile Include="DeleteFriendData.cs" />
     <Compile Include="FriendListItem.cs" />
     <Compile Include="FriendRequestData.cs" />
     <Compile Include="ClientOperation.cs" />

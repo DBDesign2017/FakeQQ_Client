@@ -331,6 +331,43 @@ namespace FakeQQ_Client
             return;
         }
 
+        //请求删除一个好友
+        public void DeleteFriend(string FriendID)
+        {
+            //构造要发送的数据包
+            DataPacket packet = new DataPacket();
+            packet.CommandNo = 7;
+            packet.ComputerName = "client";
+            packet.NameLength = packet.ComputerName.Length;
+            packet.FromIP = IPAddress.Parse("127.0.0.2");
+            packet.ToIP = IPAddress.Parse("127.0.0.2");
+            //处理数据包的Content部分
+            DeleteFriendData data = new DeleteFriendData();
+            data.UserID = UserID;
+            data.FriendID = FriendID;
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            packet.Content = js.Serialize(data);
+            //发送！
+            try
+            {
+                Send(client, packet.PacketToBytes());
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+            //在本地好友列表里面删除这一条，更新界面
+            for(int i=0; i<friendList.Count; i++)
+            {
+                if(FriendID == ((FriendListItem)friendList[i]).UserID)
+                {
+                    friendList.RemoveAt(i);
+                    break;
+                }
+            }
+            ToUpdateFriendListView(null, null);
+        }
+
         private void RecieveCallback(IAsyncResult iar)
         {
             DataPacketManager recieveData = iar.AsyncState as DataPacketManager;
@@ -386,6 +423,22 @@ namespace FakeQQ_Client
                             //发布添加好友失败事件
                             Console.WriteLine("friend request fail! event occur");
                             ToFriendRequestFail(null, packet);
+                            break;
+                        }
+                    case 13://被删好友了
+                        {
+                            JavaScriptSerializer js = new JavaScriptSerializer();
+                            dynamic content = js.Deserialize<dynamic>(packet.Content.Replace("\0", ""));
+                            string FriendID = content["UserID"];
+                            for(int i=0; i < friendList.Count; i++)
+                            {
+                                if(FriendID == ((FriendListItem)friendList[i]).UserID)
+                                {
+                                    friendList.RemoveAt(i);
+                                    break;
+                                }
+                            }
+                            ToUpdateFriendListView(null, null);
                             break;
                         }
                     case 17://下载好友列表成功
